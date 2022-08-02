@@ -1,0 +1,127 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="col-md-8">
+<div class="row">
+  <div class="col-md-4">
+    <div class="card">
+        <h5 class="card-header text-center">Мой профиль</h5>
+         <div class="card-body text-center">
+          <img src="{{ url_for('static', filename='user_icon.jpg') }}" class="figure-img img-fluid rounded-circle mx-auto d-block" width="220" height="220" alt="A generic square placeholder image with rounded corners in a figure.">
+          <h5 class="text-center">{{user_surname}} {{user_name}} {{user_middle_name}}</h5>
+          <a href="{{ url_for('edit_profile') }}" type="button" class="btn btn-success btn-block">Изменить</a>
+         </div>
+      </div>
+  </div>
+  <div class="col-md-8">
+    <ul class="nav nav-pills nav-justified" id="pills-tab" role="tablist">
+ <li class="nav-item">
+    {% if u_status == "Педагог" or u_status == "Эксперт" or u_status == "Репетитор" %}
+    <a class="nav-link active" id="graduate-tab" data-toggle="pill" href="#graduate" role="tab" aria-controls="graduate" aria-selected="false">Мои оценки <span class="badge badge-light">{{all_count}}</span></a>
+    {% else %}
+    <a class="nav-link active" id="materials-tab" data-toggle="pill" href="#materials" role="tab" aria-controls="materials" aria-selected="false">Мои материалы <span class="badge badge-light">{{student_post_count}}</span></a>
+    {% endif %}
+  </li>
+  <li class="nav-item">
+  <a class="nav-link" id="message-tab" data-toggle="pill" href="#message" role="tab" aria-controls="message" aria-selected="false">Личные сообщения <span class="badge badge-light">
+      {% if message_count_new == 0 %}
+      {{message_count_old}} / {{message_count_new}}
+      {% else %}
+      {{message_count_old}} / + {{message_count_new}}
+      {% endif %}
+  </span></a>
+  </li>
+  <li class="nav-item">
+    <a class="nav-link" id="ntf-tab" data-toggle="pill" href="#ntf" role="tab" aria-controls="ntf" aria-selected="false">Уведомления <span class="badge badge-light">
+        {% if notification_count_new == 0 %}
+        {{notification_count_old}} / {{ notification_count_new}}
+        {% else %}
+        {{notification_count_old}} / + {{ notification_count_new}}
+        {% endif %}
+    </span></a>
+  </li>
+</ul>
+<div class="tab-content" id="pills-tabContent">
+  {% if u_status == "Учащийся" %}
+  <div class="tab-pane fade show active" id="materials" role="tabpanel" aria-labelledby="materials-tab">
+    <div class="card mt-4 mb-4">
+      <div class="card-header">Вы опубликовали следующие материалы по истории и обществознанию</div>
+      <div class="card-body">
+      {% for student_post in student_post_list %}
+        <ul>   
+      {% if student_post.category == 'История' %}
+    <li>Историческое сочинение по периоду <a class="alert-link" href="{{ url_for('post', id=student_post.id)}}">{{ student_post.title}}</a></li>
+    {% else %}
+    <li>Эссе на тему <a class="alert-link" href="{{ url_for('post', id=student_post.id)}}">{{ student_post.title}}</a></li>
+    {% endif %}
+  </ul>
+  {% endfor %}
+  </div>
+</div>
+</div>
+{% else %}
+<div class="tab-pane fade show active" id="graduate" role="tabpanel" aria-labelledby="graduate-tab">
+  {% if expert_comments_h %}
+<div class="card mb-4 mt-4">
+      <div class="card-header">Вы оценили следующие материалы по истории</div>
+      <div class="card-body">
+      {% for expert_comments in expert_comments_h %}
+    <ul>
+    <li>Историческое сочинение по периоду <a class="alert-link" href="{{ url_for('post', id=expert_comments.post_id.id)}}">{{ expert_comments.post_id.title}}</a> вы оценили на {{expert_comments.total}} балла(ов)</li>
+  </ul>
+  {% endfor %}
+  </div>
+  </div>
+  {% endif %}
+  {% if expert_comments_s %}
+  <div class="card mb-4 mt-4">
+   <div class="card-header">Вы оценили следующие материалы по обществознанию</div>
+   <div class="card-body">
+      {% for expert_comments in expert_comments_s %}
+    <ul>
+    <li>Эссе на тему <a class="alert-link" href="{{ url_for('post', id=expert_comments.post_id.id)}}">{{ expert_comments.post_id.title}}</a> вы оценили на {{expert_comments.total}} балла(ов)</li>
+  </ul>
+  {% endfor %}
+  </div>
+</div>
+{% endif %}
+</div>
+{% endif %}
+  <div class="tab-pane fade" id="message" role="tabpanel" aria-labelledby="message-tab">
+    {% for message in message_list %}
+    <div class="card mb-4 mt-4">
+    <div class="card-header">
+    <a class="alert-link" href="{{ url_for('profile', nickname=message.sender.nickname)}}">{{message.sender.surname + ' ' + message.sender.name}}</a> отправил вам сообщение
+        {% if message.is_read == False %}
+        <a class="close" href="{{ url_for('update_msg', msg_id=message.id)}}"><span aria-hidden="true">&#9733;</span></a>
+      {% else %}
+      <a class="close" href="{{ url_for('delete_msg', msg_id=message.id)}}"><span aria-hidden="true">&times;</span></a>
+      {% endif %}
+    </div>
+    <div class="card-body mb-4">
+    <p>Тема: {{message.theme}}</p>
+    <p>Сообщение: {{message.message}}</p>
+    <p>Дата: {{message.date.strftime("%d/%m/%Y")}}</p>
+    </div>
+    </div>
+    {% endfor %}
+  </div>
+  <div class="tab-pane fade" id="ntf" role="tabpanel" aria-labelledby="ntf-tab">
+    {% for ntf in notification_list %}
+  <div class="card mt-4 mb-4">
+  <div class="card-header">
+              <span>{{ntf.title}} ({{ntf.date.strftime("%d/%m/%Y")}})</span>
+      {% if ntf.status_view == False %}
+      <a class="close" href="{{ url_for('update_ntf', ntf_id=ntf.id)}}"><span aria-hidden="true">&#9733;</span></a>
+      {% else %}
+      <a class="close" href="{{ url_for('delete_ntf', ntf_id=ntf.id)}}"><span aria-hidden="true">&times;</span></a>
+      {% endif %}
+  </div>
+  <div class="card-body">{{ntf.message}}</div>
+  </div>
+  {% endfor %}
+  </div>
+</div>
+  </div>
+</div>
+</div>
+{% endblock %}

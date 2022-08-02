@@ -1,0 +1,47 @@
+{% extends "base.html" %}
+{% block content %}
+  <div class="col-md-8">
+    {% if public_posts %}
+  {% for post in public_posts %}
+  {% if post.category == 'История'%}
+  <div class="card mb-4">
+  <div class="card-body">
+    <a class="alert-link" href="{{ url_for('post', id=post.id)}}"><h3 class="card-title alert alert-primary">Историческое сочинение по периоду {{ post.title }}</h3></a>
+    <p>
+      {% if current_user.id == post.author.id %}
+      <span class="badge badge-pill badge-info">{{post.author.surname + ' ' + post.author.name}}</span>
+       {% else %}
+      <a class="alert-link" href="{{ url_for('profile', nickname=post.author.nickname)}}">
+      <span class="badge badge-pill badge-info">{{post.author.surname + ' ' + post.author.name}}</span></a>
+       {% endif %}
+      <span class="badge badge-pill badge-info">{{post.category}}</span> <span class="badge badge-pill badge-info">{{post.create_date.strftime("%d/%m/%Y")}}</span>
+    </p>
+    <p class="card-text">{{ post.content[:500] | safe }} <...></p>
+    <a href="{{ url_for('post', id=post.id)}}" class="btn btn-primary btn-xs">Продолжить чтение сочинения</a>
+  </div>
+</div>
+      {% else %}
+      <div class="card">
+  <div class="card-body">
+    <a href="{{ url_for('post', id=post.id)}}"><h3 class="card-title alert alert-success">{{ post.title }}</h3></a>
+    <p>
+     {% if current_user.id == post.author.id %}
+      <span class="badge badge-pill badge-info">{{post.author.surname + ' ' + post.author.name}}</span>
+       {% else %}
+      <a class="alert-link" href="{{ url_for('profile', nickname=post.author.nickname)}}">
+      <span class="badge badge-pill badge-info">{{post.author.surname + ' ' + post.author.name}}</span></a>
+       {% endif %}
+    <span class="badge badge-pill badge-info">{{post.category}}</span> <span class="badge badge-pill badge-info">{{post.create_date.strftime("%d/%m/%Y")}}</span></p>
+    <p class="card-text">{{ post.content[:500] | safe }} <...></p>
+    <a href="{{ url_for('post', id=post.id)}}" class="btn btn-primary btn-xs">Продолжить чтение эссе</a>
+  </div>
+</div>
+<br/>
+      {% endif %}
+      {% endfor %}
+ {% else %}
+ <h4 class="alert alert-secondary text-center">На данный момент нет ни одной заметки. Подождите пока кто-нибудь из учащихся разместит материал.
+ Если вы ученик, то можете опубликовать своё эссе или сочинение для того, чтобы его оценили эксперты</h4>
+ {% endif %}
+ </div>    
+{% endblock %}

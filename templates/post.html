@@ -1,0 +1,244 @@
+{% extends "base.html" %}
+{% block content %}
+ <div class="col-md-8">
+      {% if post.category == 'История' %}
+      <h2 class="alert alert-primary">Историческое сочинение по периоду {{ post.title }}</h2>
+      <p>
+        {% if current_user.id == post.author.id %}
+        <span class="badge badge-pill badge-info">{{post.author.surname + ' ' + post.author.name}}</span> <span class="badge badge-pill badge-info">{{post.category}}</span> <span class="badge badge-pill badge-info">{{post.create_date.strftime("%d/%m/%Y")}}</span>
+        {% else %}
+        <a class="alert-link" href="{{ url_for('profile', nickname=post.author.nickname)}}"><span class="badge badge-pill badge-info">{{post.author.surname + ' ' + post.author.name}}</span></a> <span class="badge badge-pill badge-info">{{post.category}}</span> <span class="badge badge-pill badge-info">{{post.create_date.strftime("%d/%m/%Y")}}</span>
+        {% endif %}
+      </p>
+      {% else %}
+      <h2 class="alert alert-success">{{ post.title}}</h2>
+      <p>
+       {% if current_user.id == post.author.id %}
+        <span class="badge badge-pill badge-info">{{post.author.surname + ' ' + post.author.name}}</span> <span class="badge badge-pill badge-info">{{post.category}}</span> <span class="badge badge-pill badge-info">{{post.create_date.strftime("%d/%m/%Y")}}</span>
+        {% else %}
+        <a class="alert-link" href="{{ url_for('profile', nickname=post.author.nickname)}}"><span class="badge badge-pill badge-info">{{post.author.surname + ' ' + post.author.name}}</span></a> <span class="badge badge-pill badge-info">{{post.category}}</span> <span class="badge badge-pill badge-info">{{post.create_date}}</span>
+        {% endif %}
+      </p>
+      {% endif %}
+    <p class="text-justify">{{ post.content | safe }}</p>
+    {% if post.category == 'История' %}
+    {% if comments_h %}
+    <div class="row"><div class="col"><h5><p class="text-center">Познакомьтесь с результатами проверки работы экспертами</p></h5></div></div>
+    {% endif %}
+    {% for comments in comments_h %}
+    <div class="row">
+      <div class="col"><p class="alert alert-primary text-center">
+      {% if current_user.id == comments.author.id %}
+      Вы следующим образом оценили данное сочинение ({{comments.date.strftime("%d/%m/%Y")}})
+      {% else %}
+      <a class="alert-link" href="{{ url_for('profile', nickname=comments.author.nickname)}}">{{ comments.author.surname + ' ' +  comments.author.name}}</a> следующим образом оценил данное сочинение ({{comments.date.strftime("%d/%m/%Y")}})
+      {% endif %}
+    </p></div>
+      </div>
+    <div class="row">
+      <div class="col text-center"><p class="alert alert-secondary">Критерий проверки</p></div>
+      <div class="col text-center"><p class="alert alert-secondary">Комментарии проверяющего</p></div>
+      <div class="col text-center"><p class="alert alert-secondary">Балл</p></div>
+      </div>
+      <div class="row">
+      <div class="col text-center"><p>K1</p></div>
+      <div class="col text-center"><p>{{ comments.k1h }}</p></div>
+      <div class="col text-center"><p>{{ comments.k1h_grade }}</p></div>
+      </div>
+      <div class="row">
+      <div class="col text-center"><p>K2</p></div>
+      <div class="col text-center"><p>{{ comments.k2h }}</p></div>
+      <div class="col text-center"><p>{{ comments.k2h_grade }}</p></div>
+      </div>
+      <div class="row">
+      <div class="col text-center"><p>K3</p></div>
+      <div class="col text-center"><p>{{ comments.k3h }}</p></div>
+      <div class="col text-center"><p>{{ comments.k3h_grade }}</p></div>
+      </div>
+      <div class="row">
+      <div class="col text-center"><p>K4</p></div>
+      <div class="col text-center"><p>{{ comments.k4h }}</p></div>
+      <div class="col text-center"><p>{{ comments.k4h_grade }}</p></div>
+      </div>
+      <div class="row">
+      <div class="col text-center"><p>K5</p></div>
+      <div class="col text-center"><p>{{ comments.k5h }}</p></div>
+      <div class="col text-center"><p>{{ comments.k5h_grade }}</p></div>
+      </div>
+      <div class="row">
+      <div class="col text-center"><p>K6</p></div>
+      <div class="col text-center"><p>{{ comments.k6h }}</p></div>
+      <div class="col text-center"><p>{{ comments.k6h_grade }}</p></div>
+      </div>
+      <div class="row">
+      <div class="col text-center"><p>K7</p></div>
+      <div class="col text-center"><p>{{ comments.k7h }}</p></div>
+      <div class="col text-center"><p>{{ comments.k7h_grade }}</p></div>
+      </div>
+      <div class="row">
+      <div class="col"><p class="alert alert-primary text-center">Всего баллов: {{ comments.total }}</p></div>
+      </div>
+      <hr/>
+      {% endfor %}
+      {% else %}
+      {% if comments_s %}
+      <div class="row"><div class="col"><h5><p class="text-center">Познакомьтесь с результатами проверки работы экспертами</p></h5></div></div>
+      {% endif %}
+      {% for comments in comments_s %}
+      <div class="row">
+      <div class="col"><p class="alert alert-success text-center">
+      {% if current_user.id == comments.author.id %}
+      Вы следующим образом оценили данное эссе ({{comments.date.strftime("%d/%m/%Y")}})
+      {% else %}
+      <a class="alert-link" href="{{ url_for('profile', nickname=comments.author.nickname)}}">{{ comments.author.surname + ' ' +  comments.author.name}}</a> следующим образом оценил данное эссе ({{comments.date.strftime("%d/%m/%Y")}})
+      {% endif %}
+    </p></div>
+      </div>
+    <div class="row">
+      <div class="col text-center"><p class="alert alert-secondary">Критерий проверки</p></div>
+      <div class="col text-center"><p class="alert alert-secondary">Комментарии проверяющего</p></div>
+      <div class="col text-center"><p class="alert alert-secondary">Балл</p></div>
+      </div>
+      <div class="row">
+      <div class="col text-center"><p>K1</p></div>
+      <div class="col text-center"><p>{{ comments.k1s }}</p></div>
+      <div class="col text-center"><p>{{ comments.k1s_grade }}</p></div>
+      </div>
+      <div class="row">
+      <div class="col text-center"><p>K2</p></div>
+      <div class="col text-center"><p>{{ comments.k2s }}</p></div>
+      <div class="col text-center"><p>{{ comments.k2s_grade }}</p></div>
+      </div>
+      <div class="row">
+      <div class="col text-center"><p>K3</p></div>
+      <div class="col text-center"><p>{{ comments.k3s }}</p></div>
+      <div class="col text-center"><p>{{ comments.k3s_grade }}</p></div>
+      </div>
+      <div class="row">
+      <div class="col text-center"><p>K4</p></div>
+      <div class="col text-center"><p>{{ comments.k4s }}</p></div>
+      <div class="col text-center"><p>{{ comments.k4s_grade }}</p></div>
+      </div>
+      <div class="row">
+      <div class="col"><p class="alert alert-success text-center">Всего баллов: {{ comments.total }}</p></div>
+      </div>
+      <hr/>
+      {% endfor %}
+      {% endif %}
+    {% if current_user.is_authenticated %}
+    {% if u_status == "Педагог" or u_status == "Эксперт" or u_status == "Репетитор" %}
+    {% if post.category == 'История' %}
+    <form name="add_comment_h" class="form-horizontal" method="POST">
+      <div class="row"><div class="col"><h4><p class="text-center">Оцените прочитанное сочинение согласно критериям</p></h4></div></div>
+      <div class="row">
+        <div class="col"><div class="form-group"><textarea class="form-control" rows="3" name="k1h" placeholder="Критерий K1"></textarea></div></div>
+        <div class="col"><div class="form-group"><select name="k1h_grade" class="form-control">
+        <option value="" disabled selected>Балл</option>
+        <option value="0">0</option>
+        <option value="1">1</option>
+        <option value="2">2</option>
+      </select></div>
+      </div>
+      </div>
+      <div class="row">
+      <div class="col">
+        <div class="form-group"><textarea class="form-control" rows="3" name="k2h" placeholder="Критерий K2"></textarea></div>
+      </div>
+      <div class="col">
+        <div class="form-group"><select name="k2h_grade" class="form-control">
+        <option value="" disabled selected>Балл</option>
+        <option value="0">0</option>
+        <option value="1">1</option>
+        <option value="2">2</option>
+      </select></div>
+    </div>
+      </div>
+      <div class="row">
+      <div class="col"><div class="form-group"><textarea class="form-control" rows="3" name="k3h" placeholder="Критерий K3"></textarea></div></div>
+      <div class="col"><div class="form-group"><select name="k3h_grade" class="form-control">
+        <option value="" disabled selected>Балл</option>
+        <option value="0">0</option>
+        <option value="1">1</option>
+        <option value="2">2</option>
+      </select></div></div>
+      </div>
+      <div class="row">
+      <div class="col"><div class="form-group"><textarea class="form-control" rows="3" name="k4h" placeholder="Критерий K4"></textarea></div></div>
+      <div class="col"><div class="form-group"><select name="k4h_grade" class="form-control">
+        <option value="" disabled selected>Балл</option>
+        <option value="0">0</option>
+        <option value="1">1</option>
+      </select></div></div>
+      </div>
+      <div class="row">
+      <div class="col"><div class="form-group"><textarea class="form-control" rows="3" name="k5h" placeholder="Критерий K5"></textarea></div></div>
+      <div class="col"><div class="form-group"><select name="k5h_grade" class="form-control">
+        <option value="" disabled selected>Балл</option>
+        <option value="0">0</option>
+        <option value="1">1</option>
+      </select></div></div>
+      </div>
+      <div class="row">
+      <div class="col"><div class="form-group"><textarea class="form-control" rows="3" name="k6h" placeholder="Критерий K6"></textarea></div></div>
+      <div class="col"><div class="form-group"><select name="k6h_grade" class="form-control">
+        <option value="" disabled selected>Балл</option>
+        <option value="0">0</option>
+        <option value="1">1</option>
+        <option value="2">2</option>
+        <option value="3">3</option>
+      </select></div></div>
+      </div>
+      <div class="row">
+      <div class="col"><div class="form-group"><textarea class="form-control" rows="3" name="k7h" placeholder="Критерий K7"></textarea></div></div>
+      <div class="col"><div class="form-group"><select name="k7h_grade" class="form-control">
+        <option value="" disabled selected>Балл</option>
+        <option value="0">0</option>
+        <option value="1">1</option>
+      </select></div></div>
+      </div>
+      <div class="form-group text-center"><button type="submit" name="button" class="btn btn-default btn-xs">Отправить комментарий</button></div>
+    </form>
+    {% else %}
+    <form name="add_comment_s" class="form-horizontal" method="POST">
+    <div class="row"><div class="col"><h4><p class="text-center">Оцените прочитанное эссе согласно критериям</p></h4></div></div>
+    <div class="row">
+      <div class="col"><div class="form-group"><textarea class="form-control" rows="3" name="k1s" placeholder="Критерий K1"></textarea></div></div>
+      <div class="col"><div class="form-group"><select name="k1s_grade" class="form-control">
+        <option value="" disabled selected>Балл</option>
+        <option>0</option>
+        <option>1</option>
+      </select></div></div>
+      </div>
+    <div class="row">
+      <div class="col"><div class="form-group"><textarea class="form-control" rows="3" name="k2s" placeholder="Критерий K2"></textarea></div></div>
+      <div class="col"><div class="form-group"><select name="k2s_grade" class="form-control">
+        <option value="" disabled selected>Балл</option>
+        <option>0</option>
+        <option>1</option>
+        <option>2</option>
+      </select></div></div>
+      </div>
+    <div class="row">
+      <div class="col"><div class="form-group"><textarea class="form-control" rows="3" name="k3s" placeholder="Критерий K3"></textarea></div></div>
+      <div class="col"><div class="form-group"><select name="k3s_grade" class="form-control">
+        <option value="" disabled selected>Балл</option>
+        <option>0</option>
+        <option>1</option>
+      </select></div></div>
+      </div>
+    <div class="row">
+      <div class="col"><div class="form-group"><textarea class="form-control" rows="3" name="k4s" placeholder="Критерий K4"></textarea></div></div>
+      <div class="col"><div class="form-group"><select name="k4s_grade" class="form-control">
+        <option value="" disabled selected>Балл</option>
+        <option>0</option>
+        <option>1</option>
+        <option>2</option>
+      </select></div></div>
+      </div>
+      <div class="form-group text-center"><button type="submit" name="button" class="btn btn-default btn-xs">Отправить комментарий</button></div>
+    </form>
+    {% endif %}
+    {% endif %}
+    {% endif %}
+ </div>
+{% endblock %}

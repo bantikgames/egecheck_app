@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Проверка эссе и исторических сочинений</title>
+  <link rel="stylesheet" type="text/css" title="Cool stylesheet" href="{{ url_for('static', filename='reset.css') }}">
+  <link rel="stylesheet" type="text/css" title="Cool stylesheet" href="{{ url_for('static', filename='style.css') }}">
+  <link href="https://fonts.googleapis.com/css?family=Merriweather&display=swap" rel="stylesheet">
+</head>
+<body>
+<div id="main">
+<div id="header"><p>Проверка эссе</p></div>
+  <div id="menu">
+  <ul>
+    <li><a href="{{ url_for('index') }}">Главная</a></li>
+    <li><a href="{{ url_for('about') }}">О проекте</a></li>
+    <li><a href="{{ url_for('register') }}">Регистрация</a></li>
+    <li><a href="{{ url_for('login') }}">Войти</a></li>
+    <li><a href="{{ url_for('add') }}">Добавить</a></li>
+    <li><a href="{{ url_for('contacts') }}">Контакты</a></li>
+</ul>
+</div>

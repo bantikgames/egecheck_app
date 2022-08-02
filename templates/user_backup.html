@@ -1,0 +1,76 @@
+{% extends "base.html" %}
+{% import 'bootstrap/wtf.html' as wtf %}
+{% block content %}
+<div class="modal" tabindex="-1" role="dialog" id="MessageForm">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Написать пользователю</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        {{ wtf.quick_form(form) }}
+      </div>
+    </div>
+  </div>
+</div>
+<div class="col-md-8">
+    <div class="media">
+  <figure class="figure">
+  <img src="{{ url_for('static', filename='user_icon.jpg') }}" class="figure-img img-fluid rounded" width="220" height="220" alt="A generic square placeholder image with rounded corners in a figure.">
+  <figcaption class="figure-caption text-center"><button type="button" class="btn btn-success" data-toggle="modal" data-target="#MessageForm">Написать сообщение</button></figcaption>
+</figure>
+        <div class="media-body">
+    <h2 class="mt-0">Личный профиль пользователя</h2>
+    <table class="table table-borderless text-justify">
+        <thead>
+    <tr>
+      <th scope="col"><h6>Фамилия</h6></th>
+      <th scope="col"><h6>Имя</h6></th>
+      <th scope="col"><h6>Отчество</h6></th>
+    </tr>
+    <tr>
+      <td>{{user_surname}}</td>
+      <td>{{user_name}}</td>
+      <td>{{user_middle_name}}</td>
+    </tr>
+    <tr>
+      <th scope="col"><h6>Статус</h6></th>
+      <th scope="col"><h6>Адрес электронной почты</h6></th>
+      <th scope="col"><h6>Номер телефона</h6></th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>{{user_status}}</td>
+      <td>{{user_email}}</td>
+      <td>{{user_phone}}</td>
+    </tr>
+    <tr>
+        <th colspan="6"><h5>Последняя активность</h5></th>
+    </tr>
+    <tr>
+        <td colspan="6">
+        {% for student_post in student_post_list %}
+        {% if student_post.category == 'История' %}
+    <p>Опубликовал историческое сочинение по периоду <a class="alert-link" href="{{ url_for('post', id=student_post.id)}}">{{ student_post.title}}</a></p>
+    {% else %}
+   <p>Опубликовал эссе на тему <a class="alert-link" href="{{ url_for('post', id=student_post.id)}}">{{ student_post.title}}</a></p>
+    {% endif %}
+     {% endfor %}
+     {% for expert_comments_last in expert_comments_h_last %}
+     <p>Оценил историческое сочинение по периоду <a class="alert-link" href="{{ url_for('post', id=expert_comments_last.post_id.id)}}">{{ expert_comments_last.post_id.title}}</a> на {{expert_comments_last.total}} балла(ов)</p>
+     {% endfor %}
+     {% for expert_comments_last in expert_comments_s_last %}
+     <p>Оценил эссе по теме <a class="alert-link" href="{{ url_for('post', id=expert_comments_last.post_id.id)}}">{{ expert_comments_last.post_id.title}}</a> на {{expert_comments_last.total}} балла(ов)</p>
+     {% endfor %}
+        </td>
+    </tr>
+</tbody>
+    </table>
+    </div>
+</div>
+</div>
+{% endblock %}

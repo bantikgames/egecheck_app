@@ -1,0 +1,122 @@
+{% extends "base.html" %}
+{% import 'bootstrap/wtf.html' as wtf %}
+{% block content %}
+<div class="modal" tabindex="-1" role="dialog" id="MessageForm">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Написать пользователю</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        {{ wtf.quick_form(form) }}
+      </div>
+    </div>
+  </div>
+</div>
+<div class="col-md-8">
+  <div class="row">
+    <div class="col-md-4">
+      <div class="card">
+        <h5 class="card-header text-center">Профиль пользователя</h5>
+         <div class="card-body text-center">
+          <img src="{{ url_for('static', filename='user_icon.jpg') }}" class="figure-img img-fluid rounded-circle mx-auto d-block" width="220" height="220" alt="A generic square placeholder image with rounded corners in a figure.">
+          <h5 class="text-center">{{user_surname}} {{user_name}} {{user_middle_name}}</h5>
+          <button type="button" class="btn btn-success btn-block" data-toggle="modal" data-target="#MessageForm">Написать</button>
+         </div>
+      </div>
+    </div>
+    <div class="col-md-8">
+      <ul class="nav nav-pills nav-justified" id="pills-tab" role="tablist">
+  <li class="nav-item">
+    <a class="nav-link active" id="about_user_tab" data-toggle="pill" href="#about_user" role="tab" aria-controls="pills-home" aria-selected="true">О пользователе</a>
+  </li>
+  <li class="nav-item">
+    <a class="nav-link" id="activity_tab" data-toggle="pill" href="#activity" role="tab" aria-controls="pills-profile" aria-selected="false">Активность</a>
+  </li>
+</ul>
+<div class="tab-content" id="pills-tabContent">
+  <div class="tab-pane fade show active" id="about_user" role="tabpanel" aria-labelledby="about_user">
+    <div class="table-responsive-sm mt-4">
+    <!--Table-->
+<table id="tablePreview" class="table table-borderless">
+  <!--Table body-->
+  <tbody>
+    <tr>
+      <th scope="row">Фамилия</th>
+      <td>{{user_surname}}</td>
+    </tr>
+    <tr>
+      <th scope="row">Имя</th>
+      <td>{{user_name}}</td>
+    </tr>
+    <tr>
+      <th scope="row">Отчество</th>
+      <td>{{user_middle_name}}</td>
+    </tr>
+    <tr>
+      <th scope="row">Статус</th>
+      <td>{{user_status}}</td>
+    </tr>
+    <tr>
+      <th scope="row">Адрес электронной почты</th>
+      <td>{{user_email}}</td>
+    </tr>
+    <tr>
+      <th scope="row">Номер телефона</th>
+      <td>{{user_phone}}</td>
+    </tr>
+    <tr>
+      <th scope="row">Дата регистрации</th>
+      <td>00.00.0000</td>
+    </tr>
+    <tr>
+      <th scope="row">Последний раз был на сайте</th>
+      <td>Вчера</td>
+    </tr>
+  </tbody>
+  <!--Table body-->
+</table>
+<!--Table-->
+</div>
+  </div>
+  <div class="tab-pane fade" id="activity" role="tabpanel" aria-labelledby="activity">
+    {% if student_post_list %}
+    <div class="card mt-4 mb-4">
+      <div class="card-header">Опубликовал следующие материалы по истории и обществознанию</div>
+      <div class="card-body">
+   {% for student_post in student_post_list %}
+   <ul>
+        {% if student_post.category == 'История' %}
+    <li>Историческое сочинение по периоду <a class="alert-link" href="{{ url_for('post', id=student_post.id)}}">{{ student_post.title}}</a></li>
+    {% else %}
+   <li>Эссе на тему <a class="alert-link" href="{{ url_for('post', id=student_post.id)}}">{{ student_post.title}}</a></li>
+    {% endif %}
+  </ul>
+     {% endfor %}
+     </div>
+   </div>
+   {% endif %}
+   {% if expert_comments_h_last or expert_comments_s_last%}
+   <div class="card mt-4 mb-4">
+    <div class="card-header">Оценил следующие материалы по истории и обществознанию</div>
+    <div class="card-body">
+     {% for expert_comments_last in expert_comments_h_last %}
+     <ul>
+     <li>Историческое сочинение по периоду <a class="alert-link" href="{{ url_for('post', id=expert_comments_last.post_id.id)}}">{{ expert_comments_last.post_id.title}}</a> на {{expert_comments_last.total}} балла(ов)</li>
+     {% endfor %}
+     {% for expert_comments_last in expert_comments_s_last %}
+     <li>Эссе по теме <a class="alert-link" href="{{ url_for('post', id=expert_comments_last.post_id.id)}}">{{ expert_comments_last.post_id.title}}</a> на {{expert_comments_last.total}} балла(ов)</li>
+   </ul>
+     {% endfor %}
+   </div>
+  </div>
+  {% endif %}
+</div>
+    </div>
+  </div>
+</div>
+</div>
+{% endblock %}

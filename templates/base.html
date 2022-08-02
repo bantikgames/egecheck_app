@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>EGECHECK | Проверка исторических сочинений и эссе по обществознанию</title>
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+  <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet">
+  <script src="https://cdn.ckeditor.com/4.14.0/standard/ckeditor.js"></script>
+</head>
+<body>
+<div class="container-fluid">
+	<div class="row mb-4">
+		<div class="col-md-12">
+            <nav class="navbar sticky-top navbar-expand-lg navbar-dark bg-dark">
+  <a class="navbar-brand" href="{{url_for('index')}}">
+    <img src="{{ url_for('static', filename='icon_logo.png') }}" width="30" height="30" class="d-inline-block align-top" alt="">
+    EGECHECK (DEMO)
+  </a>
+  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+    <span class="navbar-toggler-icon"></span>
+  </button>
+  <div class="collapse navbar-collapse" id="navbarSupportedContent">
+    <ul class="navbar-nav mr-auto">
+      {% if current_user.is_authenticated %}
+      <li class="nav-item">
+        <a class="nav-link" href="{{url_for('index')}}">Главная</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="{{url_for('about')}}">О проекте</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="{{url_for('contacts')}}">Контакты</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="{{url_for('profile', nickname=current_user.nickname)}}">Мой профиль</a>
+      </li>
+      {% if current_user.is_authenticated and u_status == 'Учащийся' %}
+      <li class="nav-item">
+        <a class="nav-link" href="{{url_for('add')}}">Добавить материал</a>
+      </li>
+      {% endif %}
+      {% else %}
+      <li class="nav-item">
+        <a class="nav-link" href="{{url_for('index')}}">Главная</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="{{url_for('about')}}">О проекте</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="{{url_for('contacts')}}">Контакты</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="{{url_for('login')}}">Войти на сайт</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="{{url_for('register')}}">Регистрация</a>
+      </li>
+      {% endif %}
+    </ul>
+    <form class="form-inline my-2 my-lg-0">
+      <input class="form-control mr-sm-2" type="search" placeholder="Введите поисковый запрос" aria-label="Search">
+      <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Поиск по сайту</button>
+    </form>
+  </div>
+</nav>
+		</div>
+	</div>
+	<div class="row">
+		{% block content %} {% endblock %}
+		<div class="col-md-4">
+<div class="card mb-4">
+  <h5 class="card-header">Новые материалы на сайте</h5>
+  <div class="card-body">
+    {% for posts in last_posts %}
+    <ul>
+    {% if posts.category == 'История' %}
+    <li><a class="alert-link" href="{{ url_for('post', id=posts.id)}}"><p>Историческое сочинение по периоду {{ posts. title }}</p></a></li>
+    {% else %}
+    <li><a class="alert-link" href="{{ url_for('post', id=posts.id)}}"><p>{{ posts.title }}</p></a></li>
+    {% endif %}
+  </ul>
+    {% endfor %}
+  </div>
+</div>
+<div class="card mb-4">
+  <h5 class="card-header">Самые оценённые по истории</h5>
+  <div class="card-body">
+    {% for total_h in max_total_h %}
+    <ul>
+    <li><a class="alert-link" href="{{ url_for('post', id=total_h.post_id.id)}}"><p>Историческое сочинение по периоду {{ total_h.post_id.title }}</p></a></li>
+  </ul>
+    {% endfor %}
+  </div>
+</div>
+<div class="card">
+  <h5 class="card-header">Панель управления</h5>
+  {% if current_user.is_authenticated %}
+  <div class="card-body mb-4 text-center">
+<p>Здравствуйте, {{ current_user.surname }} {{ current_user.name }} {{ current_user.middle_name }}!</p>
+<p>Ваш статус: {{ current_user.status }}</p>
+<p>Адрес электронной почты: {{ current_user.email }}</p>
+<p>Телефон для связи: {{ current_user.phone_number }}</p>
+{% if u_status == 'Учащийся' %}
+<a class="btn btn-info mr-2 mb-2" href="{{url_for('add')}}">Добавить материал</a>
+<a class="btn btn-success mr-2 mb-2" href="{{url_for('profile', nickname=current_user.nickname)}}">Перейти в мой профиль</a>
+<a class="btn btn-danger mb-2" href="{{ url_for('logout') }}">Выйти из профиля</a>
+{% else %}
+<a class="btn btn-success mr-2 mb-2" href="{{url_for('profile', nickname=current_user.nickname)}}">Перейти в мой профиль</a>
+<a class="btn btn-danger mb-2" href="{{ url_for('logout') }}">Выйти из профиля</a>
+{% endif %}
+  </div>
+  {% else %}
+  <div class="card-body text-center">
+    <p class="alert alert-warning">Чтобы получит доступ к панели управления необходимо войти на сайт или зарегистрироваться</p>
+    <a class="btn btn-success mr-2 mb-2" href="{{url_for('login')}}" role="button">Войти на сайт</a>
+    <a class="btn btn-primary mb-2" href="{{url_for('register')}}" role="button">Зарегистрироваться</a>
+  </div>
+  {% endif %}
+</div>
+		</div>
+	</div>
+	<div class="row">
+		<div class="col-md-4">
+		</div>
+		<div class="col-md-4">
+		</div>
+		<div class="col-md-4">
+		</div>
+	</div>
+</div>
+  <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+</body>
+</html>

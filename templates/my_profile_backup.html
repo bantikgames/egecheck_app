@@ -1,0 +1,139 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="col-md-8">
+<div class="media">
+  <img class="align-self-start mr-3" src="{{ url_for('static', filename='user_icon.jpg') }}" width="172" height="172" alt="Generic placeholder image">
+  <div class="media-body">
+    <h2 class="mt-0">Ваш профиль</h2>
+    <table class="table table-borderless text-justify">
+        <thead>
+    <tr>
+      <th scope="col"><h6>Фамилия</h6></th>
+      <th scope="col"><h6>Имя</h6></th>
+      <th scope="col"><h6>Отчество</h6></th>
+    </tr>
+    <tr>
+      <td>{{user_surname}}</td>
+      <td>{{user_name}}</td>
+      <td>{{user_middle_name}}</td>
+    </tr>
+    <tr>
+      <th scope="col"><h6>Статус</h6></th>
+      <th scope="col"><h6>Адрес электронной почты</h6></th>
+      <th scope="col"><h6>Номер телефона</h6></th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>{{user_status}}</td>
+      <td>{{user_email}}</td>
+      <td>{{user_phone}}</td>
+    </tr>
+  </tbody>
+</table>
+    <ul class="nav nav-pills mb-3" id="pills-tab" role="tablist">
+  <li class="nav-item">
+    {% if u_status == "Педагог" or u_status == "Эксперт" or u_status == "Репетитор" %}
+    <a class="nav-link active" id="pills-home-tab" data-toggle="pill" href="#pills-home" role="tab" aria-controls="pills-home" aria-selected="true">Ваши оценки <span class="badge badge-light">{{all_count}}</span></a>
+    {% else %}
+    <a class="nav-link active" id="pills-home-tab" data-toggle="pill" href="#pills-home" role="tab" aria-controls="pills-home" aria-selected="true">Ваши материалы <span class="badge badge-light">{{student_post_count}}</span></a>
+    {% endif %}
+  </li>
+  <li class="nav-item">
+  <a class="nav-link" id="pills-profile-tab" data-toggle="pill" href="#pills-profile" role="tab" aria-controls="pills-profile" aria-selected="false">Личные сообщения <span class="badge badge-light">
+      {% if message_count_new == 0 %}
+      {{message_count_old}} / {{message_count_new}}
+      {% else %}
+      {{message_count_old}} / + {{message_count_new}}
+      {% endif %}
+  </span></a>
+  </li>
+  <li class="nav-item">
+    <a class="nav-link" id="pills-contact-tab" data-toggle="pill" href="#pills-contact" role="tab" aria-controls="pills-contact" aria-selected="false">Уведомления <span class="badge badge-light">
+        {% if notification_count_new == 0 %}
+        {{notification_count_old}} / {{ notification_count_new}}
+        {% else %}
+        {{notification_count_old}} / + {{ notification_count_new}}
+        {% endif %}
+    </span></a>
+  </li>
+</ul>
+<div class="tab-content" id="pills-tabContent">
+  <div class="tab-pane fade show active" id="pills-home" role="tabpanel" aria-labelledby="pills-home-tab">
+    {% if u_status == "Учащийся" %}
+    <div class="card">
+      <div class="card-header">Вы опубликовали следующие материалы по истории и обществознанию</div>
+      <div class="card-body">
+      {% for student_post in student_post_list %}
+        <ul>   
+      {% if student_post.category == 'История' %}
+    <li>Историческое сочинение по периоду <a class="alert-link" href="{{ url_for('post', id=student_post.id)}}">{{ student_post.title}}</a></li>
+    {% else %}
+    <li>Эссе на тему <a class="alert-link" href="{{ url_for('post', id=student_post.id)}}">{{ student_post.title}}</a></li>
+    {% endif %}
+  </ul>
+  {% endfor %}
+  </div>
+</div>
+{% else %}
+<div class="card mb-4">
+      <div class="card-header">Вы оценили следующие материалы по истории</div>
+      <div class="card-body">
+      {% for expert_comments in expert_comments_h %}
+    <ul>
+    <li>Историческое сочинение по периоду <a class="alert-link" href="{{ url_for('post', id=expert_comments.post_id.id)}}">{{ expert_comments.post_id.title}}</a> вы оценили на {{expert_comments.total}} балла(ов)</li>
+  </ul>
+  {% endfor %}
+  </div>
+  </div>
+  <div class="card mb-4">
+   <div class="card-header">Вы оценили следующие материалы по обществознанию</div>
+   <div class="card-body">
+      {% for expert_comments in expert_comments_s %}
+    <ul>
+    <li>Эссе на тему <a class="alert-link" href="{{ url_for('post', id=expert_comments.post_id.id)}}">{{ expert_comments.post_id.title}}</a> вы оценили на {{expert_comments.total}} балла(ов)</li>
+  </ul>
+  {% endfor %}
+  </div>
+</div>
+{% endif %}
+  </div>
+  <div class="tab-pane fade" id="pills-profile" role="tabpanel" aria-labelledby="pills-profile-tab">
+    {% for message in message_list %}
+    <div class="card mb-4">
+    <div class="card-header">
+    <a class="alert-link" href="{{ url_for('profile', nickname=message.sender.nickname)}}">{{message.sender.surname + ' ' + message.sender.name}}</a> отправил вам сообщение
+        {% if message.is_read == False %}
+        <a class="close" href="{{ url_for('update_msg', msg_id=message.id)}}"><span aria-hidden="true">&#9733;</span></a>
+      {% else %}
+      <a class="close" href="{{ url_for('delete_msg', msg_id=message.id)}}"><span aria-hidden="true">&times;</span></a>
+      {% endif %}
+    </div>
+    <div class="card-body mb-4">
+    <p>Тема: {{message.theme}}</p>
+    <p>Сообщение: {{message.message}}</p>
+    <p>Дата: {{message.date.strftime("%d/%m/%Y")}}</p>
+    </div>
+    </div>
+    {% endfor %}
+      </div>
+  <div class="tab-pane fade" id="pills-contact" role="tabpanel" aria-labelledby="pills-contact-tab">
+  {% for ntf in notification_list %}
+  <div class="card">
+  <div class="card-header">
+              <span>{{ntf.title}} ({{ntf.date.strftime("%d/%m/%Y")}})</span>
+      {% if ntf.status_view == False %}
+      <a class="close" href="{{ url_for('update_ntf', ntf_id=ntf.id)}}"><span aria-hidden="true">&#9733;</span></a>
+      {% else %}
+      <a class="close" href="{{ url_for('delete_ntf', ntf_id=ntf.id)}}"><span aria-hidden="true">&times;</span></a>
+      {% endif %}
+  </div>
+  <div class="card-body mb-4">{{ntf.message}}</div>
+  </div>
+  {% endfor %}
+  </div>
+</div>
+  </div>
+</div>
+</div>
+{% endblock %}

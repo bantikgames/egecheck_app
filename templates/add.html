@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+{% block content %}
+  <div class="col-md-8">
+    <form name="addForm" id="addForm" method="post" action="{{ url_for('add_post') }}">
+      <div class="form-group">
+        <label for="exampleInputTitle">Укажите цитату по обществознанию или период времени по истории</label>
+        <input type="text" name="title" class="form-control" placeholder="Цитата эссе или временной промежуток" size="125" width="40">
+      </div>
+      <div class="form-group">
+        <label for="exampleSelectCategory">Выберите предмет</label>
+        <select name="category" class="form-control">
+          <option value="" disabled selected>Выберите предмет</option>
+          <option>История</option>
+          <option>Обществознание</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label for="exampleTextareaContent">Напишите своё эссе или сочинение</label>
+        <textarea name="content" class="form-control" rows="30"></textarea>
+        <script>
+                        CKEDITOR.replace( 'content' );
+                </script>
+      </div>
+      <div class="form-group">
+      <button type="submit" name="button" class="btn btn-default">Опубликовать материал на сайте</button>
+    </div>
+    </form>
+  </div>
+{% endblock %}
