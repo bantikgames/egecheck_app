@@ -8,10 +8,7 @@
 ## Техническая составляющая сервиса
 Сервис реализован на языке Python, фреймворках Flask и Bootstrap. В качестве базы данных используется PostgreSQL. Доступ к базе данных из среды Python реализован через ORM Peewee (она была выбрана из-за простоты для новичка). Получаемые от пользователей данные передаются в БД в зашифрованном виде. Изначально проект был задеплоен на Heroku, но впоследствии от туда удален и доступен только на GitHub.
 ## Презентация сервиса в видеоформате
-
-<p align="center">
-<iframe width="560" height="315" src="https://www.youtube.com/embed/SF52Gg_zFfg" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
-</p>
+Перейдя по ссылке, вы сможете посмотреть на презентацию сервиса, которую я записывал на момент разработки: [ПОСМОТРЕТЬ ВИДЕО](https://youtu.be/SF52Gg_zFfg)
 
 ## Как попробовать сервис на своем локальном компьютере?
 1. Понадобится PostgreSQL для вашей ОС (проверена работоспособность сервиса на ОС семейства Windows и Linux) и все зависимости, указанные в файле requirements.txt
